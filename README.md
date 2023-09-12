@@ -19,7 +19,7 @@
 
 ## Live Demo
 
-[Live Demo Link](http://cristian.adydev.com/)
+[Live Demo Link](https://zingy-gnome-d32574.netlify.app/)
 
 ## To get a local copy up and running follow these simple example steps.
 
