@@ -1,159 +1,136 @@
-/*
-	Read Only by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+// Wrap your code in a self-invoking function to avoid global scope pollution.
+(function ($) {
+  // Define variables.
+  const $window = $(window);
+  const $body = $('body');
+  const $header = $('#header');
+  let $titleBar = null;
+  const $nav = $('#nav');
+  const $wrapper = $('#wrapper');
 
-(function($) {
+  // Breakpoints.
+  breakpoints({
+    xlarge: ['1281px', '1680px'],
+    large: ['1025px', '1280px'],
+    medium: ['737px', '1024px'],
+    small: ['481px', '736px'],
+    xsmall: [null, '480px'],
+  });
 
-	var $window = $(window),
-		$body = $('body'),
-		$header = $('#header'),
-		$titleBar = null,
-		$nav = $('#nav'),
-		$wrapper = $('#wrapper');
+  // Function to handle animations.
+  function handleAnimations() {
+    window.setTimeout(() => {
+      $body.removeClass('is-preload');
+    }, 100);
+  }
 
-	// Breakpoints.
-		breakpoints({
-			xlarge:   [ '1281px',  '1680px' ],
-			large:    [ '1025px',  '1280px' ],
-			medium:   [ '737px',   '1024px' ],
-			small:    [ '481px',   '736px'  ],
-			xsmall:   [ null,      '480px'  ],
-		});
+  // Play initial animations on page load.
+  $window.on('load', handleAnimations);
 
-	// Play initial animations on page load.
-		$window.on('load', function() {
-			window.setTimeout(function() {
-				$body.removeClass('is-preload');
-			}, 100);
-		});
+  // Tweak: Polyfill Object fit.
+  if (!browser.canUse('object-fit')) {
+    $('.image[data-position]').each(function () {
+      const $this = $(this);
+      const $img = $this.children('img');
 
-	// Tweaks/fixes.
+      // Apply img as background.
+      $this.css({
+        'background-image': `url("${$img.attr('src')}")`,
+        'background-position': $this.data('position'),
+        'background-size': 'cover',
+        'background-repeat': 'no-repeat',
+      });
 
-		// Polyfill: Object fit.
-			if (!browser.canUse('object-fit')) {
+      // Hide img.
+      $img.css('opacity', '0');
+    });
+  }
 
-				$('.image[data-position]').each(function() {
+  // Header Panel.
 
-					var $this = $(this),
-						$img = $this.children('img');
+  // Function to handle navigation clicks.
+  function handleNavClick() {
+    const $this = $(this);
 
-					// Apply img as background.
-						$this
-							.css('background-image', 'url("' + $img.attr('src') + '")')
-							.css('background-position', $this.data('position'))
-							.css('background-size', 'cover')
-							.css('background-repeat', 'no-repeat');
+    // External link? Bail.
+    if ($this.attr('href').charAt(0) !== '#') {
+      return;
+    }
 
-					// Hide img.
-						$img
-							.css('opacity', '0');
+    // Deactivate all links.
+    $nav_a.removeClass('active');
 
-				});
+    // Activate link *and* lock it.
+    $this.addClass('active active-locked');
+  }
 
-			}
+  // Nav.
+  const $nav_a = $nav.find('a');
+  $nav_a.addClass('scrolly').on('click', handleNavClick);
 
-	// Header Panel.
+  // Function to handle section scrolling.
+  function handleSectionScroll() {
+    const $this = $(this);
+    const id = $this.attr('href');
+    const $section = $(id);
 
-		// Nav.
-			var $nav_a = $nav.find('a');
+    // No section for this link? Bail.
+    if ($section.length < 1) {
+      return;
+    }
 
-			$nav_a
-				.addClass('scrolly')
-				.on('click', function() {
+    // Scrollex.
+    $section.scrollex({
+      mode: 'middle',
+      top: '5vh',
+      bottom: '5vh',
+      initialize() {
+      // Deactivate section.
+        $section.addClass('inactive');
+      },
+      enter() {
+      // Activate section.
+        $section.removeClass('inactive');
 
-					var $this = $(this);
+        // No locked links? Deactivate all links and activate this section's one.
+        if ($nav_a.filter('.active-locked').length === 0) {
+          $nav_a.removeClass('active');
+          $this.addClass('active');
+        }
+        // Otherwise, if this section's link is the one that's locked, unlock it.
+        else if ($this.hasClass('active-locked')) {
+          $this.removeClass('active-locked');
+        }
+      },
+    });
+  }
 
-					// External link? Bail.
-						if ($this.attr('href').charAt(0) != '#')
-							return;
+  // Iterate through navigation links and handle section scrolling.
+  $nav_a.each(handleSectionScroll);
 
-					// Deactivate all links.
-						$nav_a.removeClass('active');
+  // Title Bar.
+  $titleBar = $(`<div id="titleBar"><a href="#header" class="toggle"></a><span class="title">${$('#logo').html()}</span></div>`).appendTo($body);
 
-					// Activate link *and* lock it (so Scrollex doesn't try to activate other links as we're scrolling to this one's section).
-						$this
-							.addClass('active')
-							.addClass('active-locked');
+  // Panel.
+  $header.panel({
+    delay: 500,
+    hideOnClick: true,
+    hideOnSwipe: true,
+    resetScroll: true,
+    resetForms: true,
+    side: 'right',
+    target: $body,
+    visibleClass: 'header-visible',
+});
 
-				})
-				.each(function() {
-
-					var	$this = $(this),
-						id = $this.attr('href'),
-						$section = $(id);
-
-					// No section for this link? Bail.
-						if ($section.length < 1)
-							return;
-
-					// Scrollex.
-						$section.scrollex({
-							mode: 'middle',
-							top: '5vh',
-							bottom: '5vh',
-							initialize: function() {
-
-								// Deactivate section.
-									$section.addClass('inactive');
-
-							},
-							enter: function() {
-
-								// Activate section.
-									$section.removeClass('inactive');
-
-								// No locked links? Deactivate all links and activate this section's one.
-									if ($nav_a.filter('.active-locked').length == 0) {
-
-										$nav_a.removeClass('active');
-										$this.addClass('active');
-
-									}
-
-								// Otherwise, if this section's link is the one that's locked, unlock it.
-									else if ($this.hasClass('active-locked'))
-										$this.removeClass('active-locked');
-
-							}
-						});
-
-				});
-
-		// Title Bar.
-			$titleBar = $(
-				'<div id="titleBar">' +
-					'<a href="#header" class="toggle"></a>' +
-					'<span class="title">' + $('#logo').html() + '</span>' +
-				'</div>'
-			)
-				.appendTo($body);
-
-		// Panel.
-			$header
-				.panel({
-					delay: 500,
-					hideOnClick: true,
-					hideOnSwipe: true,
-					resetScroll: true,
-					resetForms: true,
-					side: 'right',
-					target: $body,
-					visibleClass: 'header-visible'
-				});
-
-	// Scrolly.
-		$('.scrolly').scrolly({
-			speed: 1000,
-			offset: function() {
-
-				if (breakpoints.active('<=medium'))
-					return $titleBar.height();
-
-				return 0;
-
-			}
-		});
-
-})(jQuery);
+// Scrolly.
+  $('.scrolly').scrolly({
+    speed: 1000,
+    offset() {
+      if (breakpoints.active('<=medium')) {
+        return $titleBar.height();
+      }
+      return 0;
+    },
+  });
+}(jQuery));
