@@ -1,6 +1,6 @@
 ![Hireable](https://img.shields.io/badge/Hireable-yes-success) ![](https://img.shields.io/badge/Mobile--responsive-yes-green) ![](https://img.shields.io/badge/-Microverse%20projects-blueviolet)
 
-# Nwoye Emmanuel Emeka - Personal Portofolio
+# Emmanuel Nwoye - Personal Portofolio
 
 > This is a personal portofolio build on top of the [html5up.net/read-only](https://html5up.net/read-only) template.
 
@@ -30,8 +30,8 @@ Open `index.html` or install and run a live server plugin on you IDE/Text editor
 👤 **Emmanuel Nwoye**
 
 - GitHub: [Githubhandle](https://github.com/Mikey1-nuel)
-- Twitter: [Twitterhandle](https://twitter.com/Mikey_nuel)
-- LinkedIn: [LinkedInhandle](https://www.linkedin.com/in/emmanuel-nwoye-5915141b8/)
+- Twitter: [Twitterhandle](https://x.com/MichaelNwo61920)
+- LinkedIn: [LinkedInhandle](https://www.linkedin.com/in/emmanuelnwoye/)
 
 ## Show your support
 
